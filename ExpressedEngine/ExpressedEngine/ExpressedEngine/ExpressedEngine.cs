@@ -26,13 +26,14 @@ namespace ExpressedEngine.ExpressedEngine
 
 
 
-        private static List<Shape2D> AllShapes = new List<Shape2D>();
-        private static List<Sprite2D> AllSprites = new List<Sprite2D>();
+        public static List<Shape2D> AllShapes = new List<Shape2D>();
+        public static List<Sprite2D> AllSprites = new List<Sprite2D>();
 
         public Color BackGroundColor = Color.Black;
 
         public Vector2 CameraPosition = Vector2.Zero();
         public float CameraAngle = 0f;
+        public Vector2 CameraZoom = new Vector2(1,1);
 
         public ExpressedEngine(Vector2 ScreenSize, string Title)
         {
@@ -46,12 +47,12 @@ namespace ExpressedEngine.ExpressedEngine
             Window.Paint += Renderer;
             Window.KeyDown += Window_KeyDown;
             Window.KeyUp += Window_KeyUp;
-
             GameLoopThread = new Thread(GameLoop);
             GameLoopThread.Start();
 
             Application.Run(Window);
         }
+
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
@@ -62,6 +63,7 @@ namespace ExpressedEngine.ExpressedEngine
         {
             GetKeyDown(e);
         }
+
 
         public static void RegisterShape(Shape2D shape)
         {
@@ -107,6 +109,8 @@ namespace ExpressedEngine.ExpressedEngine
 
             g.TranslateTransform(CameraPosition.X, CameraPosition.Y);
             g.RotateTransform(CameraAngle);
+            g.ScaleTransform(CameraZoom.X,CameraZoom.Y);
+
             
             foreach (Shape2D shape in AllShapes)
             {
@@ -114,7 +118,10 @@ namespace ExpressedEngine.ExpressedEngine
             }
             foreach(Sprite2D sprite in AllSprites)
             {
-                g.DrawImage(sprite.Sprite, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y);
+                if (!sprite.isRefrence)
+                {
+                    g.DrawImage(sprite.Sprite, sprite.Position.X, sprite.Position.Y, sprite.Scale.X, sprite.Scale.Y);
+                }
             }
         }
 

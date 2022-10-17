@@ -14,6 +14,7 @@ namespace ExpressedEngine.ExpressedEngine
         public string Directory = "";
         public string Tag = "";
         public Image Sprite = null;
+        public bool isRefrence = false;
 
         public Sprite2D(Vector2 Position, Vector2 Scale, string Directory, string Tag)
         {
@@ -28,6 +29,57 @@ namespace ExpressedEngine.ExpressedEngine
            
             Log.Info($"[SHAPE2D]({Tag}) - Has been Registered");
             ExpressedEngine.RegisterSprite(this);
+        }
+
+        public Sprite2D(string Directory)
+        {
+            this.isRefrence = true;
+            this.Directory = Directory;
+
+            Image tmp = Image.FromFile($"Assets/Sprites/{Directory}.png");
+            Bitmap sprite = new Bitmap(tmp);
+            Sprite = sprite;
+
+            Log.Info($"[SHAPE2D]({Tag}) - Has been Registered");
+            ExpressedEngine.RegisterSprite(this);
+        }
+
+        public Sprite2D(Vector2 Position, Vector2 Scale, Sprite2D reference, string Tag)
+        {
+            this.Position = Position;
+            this.Scale = Scale;
+            this.Tag = Tag;
+
+            Sprite = reference.Sprite;
+
+            Log.Info($"[SHAPE2D]({Tag}) - Has been Registered");
+            ExpressedEngine.RegisterSprite(this);
+        }
+
+        public Sprite2D IsColiding(string tag)
+        {
+            /*if (a.Position.X < b.Position.X + b.Scale.X &&
+                a.Position.X + a.Scale.X > b.Position.X &&
+                a.Position.Y < b.Position.Y + b.Scale.Y &&
+                a.Position.Y + a.Scale.Y > b.Position.Y)
+            {
+                return true;
+            }*/
+            foreach(Sprite2D b in ExpressedEngine.AllSprites)
+            {
+                if (b.Tag == tag)
+                {
+                    if (Position.X < b.Position.X + b.Scale.X &&
+                Position.X + Scale.X > b.Position.X &&
+                Position.Y < b.Position.Y + b.Scale.Y &&
+                Position.Y + Scale.Y > b.Position.Y)
+                    {
+                        return b;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public bool IsColiding(Sprite2D a, Sprite2D b)
